@@ -68,7 +68,7 @@ public class IrcClient extends PircBot implements ThreadBridge {
 	
 	public void sendMessage (String message) {
 		if (this.isConnected()){
-			this.sendMessage(message);
+			this.sendMessage(this.channel, message);
 		}
 	}
 	
@@ -92,6 +92,13 @@ public class IrcClient extends PircBot implements ThreadBridge {
 	}
 
 	public void message(JSONObject args) {
-		
+		try {
+			if (args.getString("type").equalsIgnoreCase("send_message")){
+				this.sendMessage(args.getString("contents"));
+			}
+		} catch (Exception ex){
+			//TODO
+			ex.printStackTrace();
+		}
 	}
 }

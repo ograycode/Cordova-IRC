@@ -14,7 +14,7 @@ public class CordovaIrc extends Plugin implements ThreadBridge {
 	private static final String CONNECT = "connect";
 	private static final String SEND = "send";
 	private static final String MESSAGE = "message";
-	private String callBack; 
+	private String callBack = null; 
 	
 	public CordovaIrc () {}
 
@@ -27,7 +27,9 @@ public class CordovaIrc extends Plugin implements ThreadBridge {
 	
 	@Override
 	public PluginResult execute(String action, JSONArray arg1, String arg2) {
-		this.callBack = arg2;
+		if (this.callBack == null){
+			this.callBack = arg2;	
+		}
 		if (action.contentEquals(CONNECT)){
 			if (!this.getIrcClient().isInit()){
 				try {
@@ -48,7 +50,15 @@ public class CordovaIrc extends Plugin implements ThreadBridge {
 				new IrcThread().start();
 			}
 		} else if (action.contentEquals(SEND)) {
-			
+			JSONObject obj;
+			try {
+				obj = arg1.getJSONObject(0);
+				obj.put("type", "send_message");
+				this.getIrcClient().message(obj);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
         PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
         r.setKeepCallback(true);

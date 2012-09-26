@@ -7,14 +7,16 @@
 	</head>
 	<body>
 		Hello world <br/>
-		<a href="#" id="connect-button">Connect</a>
+		<a href="#" id="connect-button">Connect</a><br/>
+		<input type="text" id="message" value=""></input>
+		<a href="#" id="send-message-button">Send</a><br/>
 		<div id="irc-box"></div>
 	</body>
 	<script type="text/javascript">
 		$(function(){
 			function callback (answer) {
 				console.log('CALLBACK ' + JSON.stringify(answer));
-				$('#irc-box').append(JSON.stringify(answer));
+				$('#irc-box').append('<br/>'+JSON.stringify(answer));
 			}
 			$('#connect-button').click(function(){
 				var args = [{
@@ -25,6 +27,10 @@
 					channel : '#jupiterbroadcasting'
 				}];
 				window.plugins.cordovairc.connect(callback, args);
+			});
+			$('#send-message-button').click(function(){
+				var toSend = $('#message').val();
+				window.plugins.cordovairc.send([{'contents' : toSend}]);
 			});
 		});
 	</script>
